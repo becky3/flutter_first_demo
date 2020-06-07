@@ -23,7 +23,7 @@ class GithubApiSessionClient {
       }
 
       var json = await response.transform(utf8.decoder).join();
-      return GithubRepo.fromJson(json);
+      return GithubRepo.createListFromJsonData(json);
     } catch (exception) {
       print("error:$exception");
       return [];
