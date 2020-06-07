@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'detail.dart';
 import 'entity/github_repo.dart';
 import 'github_api_session.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (_) => MyHomePage(title: 'Flutter Demo Home Page'),
+          '/detail': (_) => DetailPage(title: '詳細'),
         });
   }
 }
@@ -33,15 +35,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   List<GithubRepo> _items = [];
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             child: ListTile(
-              leading: Image.network('https://github.com/${item.name}.png'),
-              title: Text(item.fullName),
-              subtitle: Text(item.description),
-              onTap: () {/* react to the tile being tapped */},
-            ),
+                leading: Image.network('https://github.com/${item.name}.png'),
+                title: Text(item.fullName),
+                subtitle: Text(item.description),
+                onTap: () {
+                  _didTapItem(context, item);
+                }),
           );
         },
         itemCount: _items.length,
@@ -74,6 +69,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _didTapItem(context, GithubRepo item) {
+    Navigator.pushNamed(context, '/detail',
+        arguments: DetailPageArguments(item.fullName));
   }
 
   void _search() {
