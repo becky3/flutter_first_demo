@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _didTapItem(context, GithubRepo item) {
     Navigator.pushNamed(context, '/detail',
-        arguments: DetailPageArguments(item.fullName));
+        arguments: DetailPageArguments(item.fullName, item.htmlUrl));
   }
 
   void _search() {
