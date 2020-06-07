@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfirstdemo/page/favorite_page.dart';
 
-import 'page/detailPage.dart';
-import 'page/searchPage.dart';
+import 'page/detail_page.dart';
+import 'page/search_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,7 +44,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final List<TabInfo> _tabs = [
     TabInfo("🔎 検索", SearchPage()),
-    TabInfo("⭐ お気に入り", SearchPage()),
+    TabInfo("⭐ お気に入り", FavoritePage()),
   ];
 
   @override

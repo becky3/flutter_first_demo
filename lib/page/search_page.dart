@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../entity/github_repo.dart';
 import '../github_api_session.dart';
-import 'detailPage.dart';
+import 'detail_page.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key key, this.title}) : super(key: key);
