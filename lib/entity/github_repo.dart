@@ -6,14 +6,10 @@ class GithubRepo {
   var starCount;
   var avatarUrl;
   var description;
+  var htmlUrl;
 
   static fromJson(jsonData) {
-    print("json:$jsonData");
     var data = json.decode(jsonData);
-    print("data:$data");
-    data.forEach((key, value) {
-      print("[$key]:$value");
-    });
     List<dynamic> itemList = data['items'];
 
     return itemList.map((item) {
@@ -24,6 +20,7 @@ class GithubRepo {
       repo.fullName = item['full_name'];
       repo.starCount = item['stargazers_count'];
       repo.description = item['description'];
+      repo.htmlUrl = item['html_url'];
       return repo;
     }).toList();
   }
