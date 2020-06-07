@@ -36,12 +36,43 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<GithubRepo> _items = [];
+  var _searchWord = "";
+  final _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: TextField(
+          decoration: InputDecoration(
+            labelText: "Search repository name",
+            hintText: "Please input repository name",
+          ),
+          onChanged: _onChangedText,
+          controller: _textEditingController,
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.clear,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _searchWord = "";
+              _textEditingController.clear();
+              _search();
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _search(searchWord: _searchWord);
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
@@ -63,12 +94,11 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         itemCount: _items.length,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _search,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _onChangedText(String text) {
+    _searchWord = text;
   }
 
   void _didTapItem(context, GithubRepo item) {
@@ -76,9 +106,16 @@ class _MyHomePageState extends State<MyHomePage> {
         arguments: DetailPageArguments(item.fullName, item.htmlUrl));
   }
 
-  void _search() {
+  void _search({String searchWord = ""}) {
+    if (searchWord.isEmpty) {
+      setState(() {
+        _items = [];
+        return;
+      });
+    }
+
     var client = GithubApiSessionClient();
-    client.get("flutter").then((result) {
+    client.get(searchWord).then((result) {
       setState(() {
         print("result:$result");
         _items = result;
