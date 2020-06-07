@@ -28,11 +28,11 @@ class _DetailPageState extends State<DetailPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.favorite,
-                color: _isFavorite(repo.name)
+                color: _isFavorite(repo)
                     ? Colors.yellow
                     : Color.fromARGB(255, 0, 100, 0)),
             onPressed: () {
-              _onPressedFavorite(repo.name);
+              _onPressedFavorite(repo);
             },
           ),
         ],
@@ -47,14 +47,14 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  bool _isFavorite(String name) => _favoriteRepository.contains(name);
+  bool _isFavorite(GithubRepo repo) => _favoriteRepository.contains(repo);
 
-  void _onPressedFavorite(String name) {
+  void _onPressedFavorite(GithubRepo repo) {
     setState(() {
-      if (_isFavorite(name)) {
-        _favoriteRepository.removeFavorite(name);
+      if (_isFavorite(repo)) {
+        _favoriteRepository.removeFavorite(repo);
       } else {
-        _favoriteRepository.addFavorite(name);
+        _favoriteRepository.addFavorite(repo);
       }
     });
   }
