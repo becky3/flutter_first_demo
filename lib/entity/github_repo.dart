@@ -1,8 +1,5 @@
 import 'dart:convert';
 
-const _separator = "@@@@@@@@";
-
-// TODO: JSON形式で encode decode する
 class GithubRepo {
   final String name;
   final String fullName;
@@ -19,22 +16,24 @@ class GithubRepo {
   );
 
   String encode() {
-    final data = [
-      name,
-      fullName,
-      starCount.toString(),
-      description,
-      htmlUrl,
-    ];
-    return data.join(_separator);
+    final Map<String, dynamic> data = {
+      "name": name,
+      "full_name": fullName,
+      "stargazers_count": starCount,
+      "description": description,
+      "html_url": htmlUrl,
+    };
+
+    return jsonEncode(data);
   }
 
-  static GithubRepo createFromEncodeData(String value) {
-    final data = value.split(_separator);
-    return GithubRepo(data[0], data[1], int.parse(data[2]), data[3], data[4]);
+  static GithubRepo createFromJsonData(String value) {
+    final Map<String, dynamic> data = jsonDecode(value);
+    return createFromMapData(data);
   }
 
-  static GithubRepo createFromMapData(mapData) => GithubRepo(
+  static GithubRepo createFromMapData(Map<String, dynamic> mapData) =>
+      GithubRepo(
         mapData['name'],
         mapData['full_name'],
         mapData['stargazers_count'],
