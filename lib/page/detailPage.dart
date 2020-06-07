@@ -11,6 +11,7 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   WebViewController _controller;
+  var _isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +21,15 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(args.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.favorite,
+                color: _isFavorite
+                    ? Colors.yellow
+                    : Color.fromARGB(255, 0, 100, 0)),
+            onPressed: _onPressedFavorite,
+          ),
+        ],
       ),
       body: WebView(
         initialUrl: args.url,
@@ -29,6 +39,12 @@ class _DetailPageState extends State<DetailPage> {
         },
       ),
     );
+  }
+
+  void _onPressedFavorite() {
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
   }
 }
 
