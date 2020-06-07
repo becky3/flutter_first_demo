@@ -14,7 +14,6 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  WebViewController _controller;
   FavoriteRepository _favoriteRepository = FavoriteRepository.shared;
 
   @override
@@ -40,9 +39,6 @@ class _DetailPageState extends State<DetailPage> {
       body: WebView(
         initialUrl: repo.htmlUrl,
         javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (WebViewController controller) {
-          _controller = controller;
-        },
       ),
     );
   }

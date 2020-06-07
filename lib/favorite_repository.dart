@@ -9,9 +9,7 @@ class FavoriteRepository {
   List<String> _favoriteList = [];
 
   List<GithubRepo> getFavorites() {
-    return _favoriteList
-        .map((e) => GithubRepo.createFromEncodeData(e))
-        .toList();
+    return _favoriteList.map((e) => GithubRepo.createFromJsonData(e)).toList();
   }
 
   bool contains(GithubRepo repo) {
