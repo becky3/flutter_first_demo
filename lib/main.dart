@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'detail.dart';
-import 'entity/github_repo.dart';
-import 'github_api_session.dart';
+import 'page/detailPage.dart';
+import 'page/searchPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,15 +14,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.green,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         initialRoute: '/',
         routes: {
           '/': (_) => MyHomePage(title: 'Flutter Demo Home Page'),
-          '/detail': (_) => DetailPage(title: '詳細'),
+          '/searchPage': (_) => SearchPage(title: "リポジトリ検索"),
+          '/detailPage': (_) => DetailPage(title: '詳細'),
         });
   }
+}
+
+class TabInfo {
+  String label;
+  Widget widget;
+  TabInfo(this.label, this.widget);
 }
 
 class MyHomePage extends StatefulWidget {
@@ -35,93 +41,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<GithubRepo> _items = [];
-  var _searchWord = "";
-  final _textEditingController = TextEditingController();
+  final List<TabInfo> _tabs = [
+    TabInfo("🔎 検索", SearchPage()),
+    TabInfo("⭐ お気に入り", SearchPage()),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: TextField(
-          decoration: InputDecoration(
-            labelText: "Search repository name",
-            hintText: "Please input repository name",
+    return DefaultTabController(
+      length: _tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Flutter First Demo'),
+          bottom: PreferredSize(
+            child: TabBar(
+              isScrollable: true,
+              tabs: _tabs.map((TabInfo tab) {
+                return Tab(text: tab.label);
+              }).toList(),
+            ),
+            preferredSize: Size.fromHeight(30.0),
           ),
-          onChanged: _onChangedText,
-          controller: _textEditingController,
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.clear,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              _searchWord = "";
-              _textEditingController.clear();
-              _search();
-            },
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              _search(searchWord: _searchWord);
-            },
-          ),
-        ],
-      ),
-      body: ListView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          final item = _items[index];
-          return Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.black38),
-              ),
-            ),
-            child: ListTile(
-                leading: Image.network('https://github.com/${item.name}.png'),
-                title: Text(item.fullName),
-                subtitle: Text(item.description),
-                onTap: () {
-                  _didTapItem(context, item);
-                }),
-          );
-        },
-        itemCount: _items.length,
+        body: TabBarView(children: _tabs.map((tab) => tab.widget).toList()),
       ),
     );
-  }
-
-  void _onChangedText(String text) {
-    _searchWord = text;
-  }
-
-  void _didTapItem(context, GithubRepo item) {
-    Navigator.pushNamed(context, '/detail',
-        arguments: DetailPageArguments(item.fullName, item.htmlUrl));
-  }
-
-  void _search({String searchWord = ""}) {
-    if (searchWord.isEmpty) {
-      setState(() {
-        _items = [];
-        return;
-      });
-    }
-
-    var client = GithubApiSessionClient();
-    client.get(searchWord).then((result) {
-      setState(() {
-        print("result:$result");
-        _items = result;
-      });
-    }).catchError((e) {
-      print("error:$e");
-    });
   }
 }
