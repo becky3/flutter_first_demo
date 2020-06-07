@@ -81,7 +81,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void _didTapItem(context, GithubRepo item) {
     Navigator.pushNamed(context, '/detailPage',
-        arguments: DetailPageArguments(item.fullName, item.htmlUrl));
+        arguments: DetailPageArguments(item));
   }
 
   void _search({String searchWord = ""}) {
@@ -95,7 +95,6 @@ class _SearchPageState extends State<SearchPage> {
     var client = GithubApiSessionClient();
     client.get(searchWord).then((result) {
       setState(() {
-        print("result:$result");
         _items = result;
       });
     }).catchError((e) {

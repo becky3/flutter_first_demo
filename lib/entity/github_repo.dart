@@ -1,27 +1,34 @@
-import 'dart:convert' show json;
+import 'dart:convert';
 
 class GithubRepo {
-  var name;
-  var fullName;
-  var starCount;
-  var avatarUrl;
-  var description;
-  var htmlUrl;
+  final String name;
+  final String fullName;
+  final int starCount;
+  final String description;
+  final String htmlUrl;
 
-  static fromJson(jsonData) {
+  GithubRepo(
+    this.name,
+    this.fullName,
+    this.starCount,
+    this.description,
+    this.htmlUrl,
+  );
+
+  static GithubRepo createFromMapData(mapData) => GithubRepo(
+        mapData['name'],
+        mapData['full_name'],
+        mapData['stargazers_count'],
+        mapData['description'],
+        mapData['html_url'],
+      );
+
+  static createListFromJsonData(jsonData) {
     var data = json.decode(jsonData);
     List<dynamic> itemList = data['items'];
 
     return itemList.map((item) {
-      var repo = new GithubRepo();
-      Map<String, Object> owner = item['owner'];
-      repo.avatarUrl = owner['avatar_url'];
-      repo.name = item['name'];
-      repo.fullName = item['full_name'];
-      repo.starCount = item['stargazers_count'];
-      repo.description = item['description'];
-      repo.htmlUrl = item['html_url'];
-      return repo;
+      return createFromMapData(item);
     }).toList();
   }
 }
