@@ -11,9 +11,12 @@ class FavoriteRepository {
 
   List<GithubRepo> _favorites = [];
 
-  Future<List<GithubRepo>> getFavorites() async {
+  Future<List<GithubRepo>> loadFavorites() async {
     final list = await _load();
-    return list.map((e) => GithubRepo.createFromJsonData(e)).toList();
+    final convertedList =
+        list.map((e) => GithubRepo.createFromJsonData(e)).toList();
+    _favorites = convertedList;
+    return convertedList;
   }
 
   bool contains(GithubRepo repo) {

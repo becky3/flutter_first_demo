@@ -60,7 +60,7 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   Future<List<GithubRepo>> _getFavorites() async {
-    return _favoriteRepository.getFavorites();
+    return _favoriteRepository.loadFavorites();
   }
 
   void _didTapItem(context, GithubRepo item) {
