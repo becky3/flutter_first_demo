@@ -63,8 +63,14 @@ class _FavoritePageState extends State<FavoritePage> {
     return _favoriteRepository.loadFavorites();
   }
 
+  void _didUpdate() {
+    setState(() {
+      print("update");
+    });
+  }
+
   void _didTapItem(context, GithubRepo item) {
     Navigator.pushNamed(context, '/detailPage',
-        arguments: DetailPageArguments(item));
+        arguments: DetailPageArguments(item, updater: _didUpdate));
   }
 }

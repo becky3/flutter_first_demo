@@ -15,11 +15,13 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   FavoriteRepository _favoriteRepository = FavoriteRepository.shared;
+  Function _updater;
 
   @override
   Widget build(BuildContext context) {
     final DetailPageArguments args = ModalRoute.of(context).settings.arguments;
     final repo = args.githubRepo;
+    _updater = args.updater;
 
     return Scaffold(
       appBar: AppBar(
@@ -52,14 +54,14 @@ class _DetailPageState extends State<DetailPage> {
       } else {
         _favoriteRepository.addFavorite(repo);
       }
+      _updater?.call();
     });
   }
 }
 
 class DetailPageArguments {
   final GithubRepo githubRepo;
+  final Function updater;
 
-  DetailPageArguments(
-    this.githubRepo,
-  );
+  DetailPageArguments(this.githubRepo, {this.updater});
 }
