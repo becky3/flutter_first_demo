@@ -1,30 +1,52 @@
-import 'dart:convert' show json;
+import 'dart:convert';
 
 class GithubRepo {
-  var name;
-  var fullName;
-  var starCount;
-  var avatarUrl;
-  var description;
+  final String name;
+  final String fullName;
+  final int starCount;
+  final String description;
+  final String htmlUrl;
 
-  static fromJson(jsonData) {
-    print("json:$jsonData");
+  GithubRepo(
+    this.name,
+    this.fullName,
+    this.starCount,
+    this.description,
+    this.htmlUrl,
+  );
+
+  String encode() {
+    final Map<String, dynamic> data = {
+      "name": name,
+      "full_name": fullName,
+      "stargazers_count": starCount,
+      "description": description,
+      "html_url": htmlUrl,
+    };
+
+    return jsonEncode(data);
+  }
+
+  static GithubRepo createFromJsonData(String value) {
+    final Map<String, dynamic> data = jsonDecode(value);
+    return createFromMapData(data);
+  }
+
+  static GithubRepo createFromMapData(Map<String, dynamic> mapData) =>
+      GithubRepo(
+        mapData['name'],
+        mapData['full_name'],
+        mapData['stargazers_count'],
+        mapData['description'],
+        mapData['html_url'],
+      );
+
+  static createListFromJsonData(jsonData) {
     var data = json.decode(jsonData);
-    print("data:$data");
-    data.forEach((key, value) {
-      print("[$key]:$value");
-    });
     List<dynamic> itemList = data['items'];
 
     return itemList.map((item) {
-      var repo = new GithubRepo();
-      Map<String, Object> owner = item['owner'];
-      repo.avatarUrl = owner['avatar_url'];
-      repo.name = item['name'];
-      repo.fullName = item['full_name'];
-      repo.starCount = item['stargazers_count'];
-      repo.description = item['description'];
-      return repo;
+      return createFromMapData(item);
     }).toList();
   }
 }

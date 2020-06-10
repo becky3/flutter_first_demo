@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfirstdemo/page/favorite_page.dart';
+import 'package:provider/provider.dart';
 
-import 'entity/github_repo.dart';
-import 'github_api_session.dart';
+import 'package:flutterfirstdemo/model/favorite_notifier.dart';
+
+import 'page/detail_page.dart';
+import 'page/search_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,17 +15,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (_) => MyHomePage(title: 'Flutter Demo Home Page'),
-        });
+    return ChangeNotifierProvider<FavoriteNotifier>(
+      create: (context) => FavoriteNotifier(),
+      child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.green,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          initialRoute: '/',
+          routes: {
+            '/': (_) => MyHomePage(title: 'Flutter Demo Home Page'),
+            '/searchPage': (_) => SearchPage(title: "リポジトリ検索"),
+            '/detailPage': (_) => DetailPage(title: '詳細'),
+          }),
+    );
   }
+}
+
+class TabInfo {
+  String label;
+  Widget widget;
+  TabInfo(this.label, this.widget);
 }
 
 class MyHomePage extends StatefulWidget {
@@ -33,58 +48,55 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  List<GithubRepo> _items = [];
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final List<TabInfo> _tabs = [
+    TabInfo("🔎 検索", SearchPage()),
+    TabInfo("⭐ お気に入り", FavoritePage()),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+    final favoriteProvider =
+        Provider.of<FavoriteNotifier>(context, listen: false);
+    favoriteProvider.loadFavorites();
+
+    print("build");
+
+    return MainTab(tabs: _tabs);
+  }
+}
+
+class MainTab extends StatelessWidget {
+  const MainTab({
+    Key key,
+    @required List<TabInfo> tabs,
+  })  : _tabs = tabs,
+        super(key: key);
+
+  final List<TabInfo> _tabs;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: _tabs.length,
+      child: Scaffold(
+        appBar: _appBar(),
+        body: TabBarView(children: _tabs.map((tab) => tab.widget).toList()),
       ),
-      body: ListView.builder(
-        itemBuilder: (BuildContext context, int index) {
-          final item = _items[index];
-          return Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.black38),
-              ),
-            ),
-            child: ListTile(
-              leading: Image.network('https://github.com/${item.name}.png'),
-              title: Text(item.fullName),
-              subtitle: Text(item.description),
-              onTap: () {/* react to the tile being tapped */},
-            ),
-          );
-        },
-        itemCount: _items.length,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _search,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
-  void _search() {
-    var client = GithubApiSessionClient();
-    client.get("flutter").then((result) {
-      setState(() {
-        print("result:$result");
-        _items = result;
-      });
-    }).catchError((e) {
-      print("error:$e");
-    });
+  AppBar _appBar() {
+    return AppBar(
+      title: Text('Flutter First Demo'),
+      bottom: PreferredSize(
+        child: TabBar(
+          isScrollable: true,
+          tabs: _tabs.map((TabInfo tab) {
+            return Tab(text: tab.label);
+          }).toList(),
+        ),
+        preferredSize: Size.fromHeight(30.0),
+      ),
+    );
   }
 }
