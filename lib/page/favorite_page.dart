@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterfirstdemo/favorite_repository.dart';
+import 'package:flutterfirstdemo/model/favorite_notifier.dart';
+import 'package:provider/provider.dart';
 
 import '../entity/github_repo.dart';
 import 'detail_page.dart';
@@ -13,14 +14,11 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  final _favoriteRepository = FavoriteRepository.shared;
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _getFavorites(),
-      builder: (context, snapshot) {
-        final favorites = snapshot.data;
+    return Consumer<FavoriteNotifier>(
+      builder: (context, notifier, _) {
+        final favorites = notifier.favorites;
         return Scaffold(
           body: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
@@ -44,7 +42,11 @@ class _FavoritePageState extends State<FavoritePage> {
             itemCount: favorites?.length ?? 0,
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: _clearFavorites,
+            onPressed: () {
+              final provider =
+                  Provider.of<FavoriteNotifier>(context, listen: false);
+              provider.clearFavorites();
+            },
             tooltip: 'Clear Favorites',
             child: Icon(Icons.delete),
           ),
@@ -53,24 +55,11 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  void _clearFavorites() {
-    setState(() {
-      _favoriteRepository.clear();
-    });
-  }
-
-  Future<List<GithubRepo>> _getFavorites() async {
-    return _favoriteRepository.loadFavorites();
-  }
-
-  void _didUpdate() {
-    setState(() {
-      print("update");
-    });
-  }
-
   void _didTapItem(context, GithubRepo item) {
-    Navigator.pushNamed(context, '/detailPage',
-        arguments: DetailPageArguments(item, updater: _didUpdate));
+    Navigator.pushNamed(
+      context,
+      '/detailPage',
+      arguments: DetailPageArguments(item),
+    );
   }
 }
