@@ -55,6 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final favoriteProvider =
+        Provider.of<FavoriteNotifier>(context, listen: false);
+    favoriteProvider.loadFavorites();
+
+    print("build");
+
     return MainTab(tabs: _tabs);
   }
 }
@@ -70,10 +76,6 @@ class MainTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final favoriteProvider =
-        Provider.of<FavoriteNotifier>(context, listen: false);
-    favoriteProvider.loadFavorites();
-
     return DefaultTabController(
       length: _tabs.length,
       child: Scaffold(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfirstdemo/model/github_api_session.dart';
 
@@ -63,7 +64,9 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
             child: ListTile(
-                leading: Image.network('https://github.com/${item.name}.png'),
+                leading: CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl: 'https://github.com/${item.name}.png'),
                 title: Text(item.fullName),
                 subtitle: Text(item.description),
                 onTap: () {
