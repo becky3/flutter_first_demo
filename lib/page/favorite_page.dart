@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfirstdemo/model/favorite_notifier.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +14,14 @@ class FavoritePage extends StatefulWidget {
   _FavoritePageState createState() => _FavoritePageState();
 }
 
-class _FavoritePageState extends State<FavoritePage> {
+class _FavoritePageState extends State<FavoritePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<FavoriteNotifier>(
       builder: (context, notifier, _) {
         final favorites = notifier.favorites;
@@ -30,8 +36,10 @@ class _FavoritePageState extends State<FavoritePage> {
                   ),
                 ),
                 child: ListTile(
-                    leading:
-                        Image.network('https://github.com/${item.name}.png'),
+                    leading: CachedNetworkImage(
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        imageUrl: 'https://github.com/${item.name}.png'),
                     title: Text(item.fullName),
                     subtitle: Text(item.description),
                     onTap: () {

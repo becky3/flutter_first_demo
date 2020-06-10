@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfirstdemo/model/github_api_session.dart';
 
 import '../entity/github_repo.dart';
-import '../github_api_session.dart';
+
 import 'detail_page.dart';
 
 class SearchPage extends StatefulWidget {
@@ -12,13 +14,18 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   List<GithubRepo> _items = [];
   var _searchWord = "";
   final _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -62,7 +69,9 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
             child: ListTile(
-                leading: Image.network('https://github.com/${item.name}.png'),
+                leading: CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl: 'https://github.com/${item.name}.png'),
                 title: Text(item.fullName),
                 subtitle: Text(item.description),
                 onTap: () {

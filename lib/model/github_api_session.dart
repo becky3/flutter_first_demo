@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert' show utf8;
 import 'dart:io';
 
-import 'entity/github_repo.dart';
+import 'package:flutterfirstdemo/entity/github_repo.dart';
 
 class GithubApiSessionClient {
   Future<List<GithubRepo>> get(String query) async {
