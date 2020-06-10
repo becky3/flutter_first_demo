@@ -14,9 +14,14 @@ class FavoritePage extends StatefulWidget {
   _FavoritePageState createState() => _FavoritePageState();
 }
 
-class _FavoritePageState extends State<FavoritePage> {
+class _FavoritePageState extends State<FavoritePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<FavoriteNotifier>(
       builder: (context, notifier, _) {
         final favorites = notifier.favorites;
