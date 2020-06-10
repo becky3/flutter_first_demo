@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../entity/github_repo.dart';
+import 'package:flutterfirstdemo/entity/github_repo.dart';
 
 class FavoriteRepository {
   static final shared = FavoriteRepository._internal();
