@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterfirstdemo/favorite_repository.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import 'package:flutterfirstdemo/model/favorite_notifier.dart';
 
 import '../entity/github_repo.dart';
 
@@ -14,14 +16,11 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  FavoriteRepository _favoriteRepository = FavoriteRepository.shared;
-  Function _updater;
-
   @override
   Widget build(BuildContext context) {
     final DetailPageArguments args = ModalRoute.of(context).settings.arguments;
     final repo = args.githubRepo;
-    _updater = args.updater;
+    final provider = Provider.of<FavoriteNotifier>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,11 +28,11 @@ class _DetailPageState extends State<DetailPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.favorite,
-                color: _isFavorite(repo)
+                color: _isFavorite(provider, repo)
                     ? Colors.yellow
                     : Color.fromARGB(255, 0, 100, 0)),
             onPressed: () {
-              _onPressedFavorite(repo);
+              _onPressedFavorite(provider, repo);
             },
           ),
         ],
@@ -45,16 +44,16 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  bool _isFavorite(GithubRepo repo) => _favoriteRepository.contains(repo);
+  bool _isFavorite(FavoriteNotifier provider, GithubRepo repo) =>
+      provider.contains(repo);
 
-  void _onPressedFavorite(GithubRepo repo) {
+  void _onPressedFavorite(FavoriteNotifier provider, GithubRepo repo) {
     setState(() {
-      if (_isFavorite(repo)) {
-        _favoriteRepository.removeFavorite(repo);
+      if (_isFavorite(provider, repo)) {
+        provider.removeFavorite(repo);
       } else {
-        _favoriteRepository.addFavorite(repo);
+        provider.addFavorite(repo);
       }
-      _updater?.call();
     });
   }
 }

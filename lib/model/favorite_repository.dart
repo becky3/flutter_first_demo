@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'entity/github_repo.dart';
+import '../entity/github_repo.dart';
 
 class FavoriteRepository {
   static final shared = FavoriteRepository._internal();
@@ -11,12 +11,13 @@ class FavoriteRepository {
 
   List<GithubRepo> _favorites = [];
 
-  Future<List<GithubRepo>> loadFavorites() async {
+  List<GithubRepo> get favorites => _favorites;
+
+  Future loadFavorites() async {
     final list = await _load();
     final convertedList =
         list.map((e) => GithubRepo.createFromJsonData(e)).toList();
     _favorites = convertedList;
-    return convertedList;
   }
 
   bool contains(GithubRepo repo) {

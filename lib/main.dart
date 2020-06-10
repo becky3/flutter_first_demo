@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterfirstdemo/page/favorite_page.dart';
+import 'package:provider/provider.dart';
+
+import 'package:flutterfirstdemo/model/favorite_notifier.dart';
 
 import 'page/detail_page.dart';
 import 'page/search_page.dart';
@@ -12,18 +15,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.green,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (_) => MyHomePage(title: 'Flutter Demo Home Page'),
-          '/searchPage': (_) => SearchPage(title: "リポジトリ検索"),
-          '/detailPage': (_) => DetailPage(title: '詳細'),
-        });
+    return ChangeNotifierProvider<FavoriteNotifier>(
+      create: (context) => FavoriteNotifier(),
+      child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.green,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          initialRoute: '/',
+          routes: {
+            '/': (_) => MyHomePage(title: 'Flutter Demo Home Page'),
+            '/searchPage': (_) => SearchPage(title: "リポジトリ検索"),
+            '/detailPage': (_) => DetailPage(title: '詳細'),
+          }),
+    );
   }
 }
 
@@ -49,6 +55,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    return MainTab(tabs: _tabs);
+  }
+}
+
+class MainTab extends StatelessWidget {
+  const MainTab({
+    Key key,
+    @required List<TabInfo> tabs,
+  })  : _tabs = tabs,
+        super(key: key);
+
+  final List<TabInfo> _tabs;
+
+  @override
+  Widget build(BuildContext context) {
+    final favoriteProvider =
+        Provider.of<FavoriteNotifier>(context, listen: false);
+    favoriteProvider.loadFavorites();
+
     return DefaultTabController(
       length: _tabs.length,
       child: Scaffold(
