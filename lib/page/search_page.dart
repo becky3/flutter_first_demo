@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfirstdemo/model/github_api_session.dart';
 
 import '../entity/github_repo.dart';
-import '../github_api_session.dart';
+
 import 'detail_page.dart';
 
 class SearchPage extends StatefulWidget {

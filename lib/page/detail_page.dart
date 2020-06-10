@@ -60,7 +60,6 @@ class _DetailPageState extends State<DetailPage> {
 
 class DetailPageArguments {
   final GithubRepo githubRepo;
-  final Function updater;
 
-  DetailPageArguments(this.githubRepo, {this.updater});
+  DetailPageArguments(this.githubRepo);
 }
