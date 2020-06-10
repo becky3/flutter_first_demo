@@ -79,19 +79,23 @@ class MainTab extends StatelessWidget {
     return DefaultTabController(
       length: _tabs.length,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Flutter First Demo'),
-          bottom: PreferredSize(
-            child: TabBar(
-              isScrollable: true,
-              tabs: _tabs.map((TabInfo tab) {
-                return Tab(text: tab.label);
-              }).toList(),
-            ),
-            preferredSize: Size.fromHeight(30.0),
-          ),
-        ),
+        appBar: _appBar(),
         body: TabBarView(children: _tabs.map((tab) => tab.widget).toList()),
+      ),
+    );
+  }
+
+  AppBar _appBar() {
+    return AppBar(
+      title: Text('Flutter First Demo'),
+      bottom: PreferredSize(
+        child: TabBar(
+          isScrollable: true,
+          tabs: _tabs.map((TabInfo tab) {
+            return Tab(text: tab.label);
+          }).toList(),
+        ),
+        preferredSize: Size.fromHeight(30.0),
       ),
     );
   }

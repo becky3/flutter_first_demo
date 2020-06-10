@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:flutterfirstdemo/model/favorite_notifier.dart';
-
-import '../entity/github_repo.dart';
+import 'package:flutterfirstdemo/entity/github_repo.dart';
 
 class DetailPage extends StatefulWidget {
   final String title;
@@ -23,24 +22,28 @@ class _DetailPageState extends State<DetailPage> {
     final provider = Provider.of<FavoriteNotifier>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(repo.name),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.favorite,
-                color: _isFavorite(provider, repo)
-                    ? Colors.yellow
-                    : Color.fromARGB(255, 0, 100, 0)),
-            onPressed: () {
-              _onPressedFavorite(provider, repo);
-            },
-          ),
-        ],
-      ),
+      appBar: _appBar(repo, provider),
       body: WebView(
         initialUrl: repo.htmlUrl,
         javascriptMode: JavascriptMode.unrestricted,
       ),
+    );
+  }
+
+  AppBar _appBar(GithubRepo repo, FavoriteNotifier provider) {
+    return AppBar(
+      title: Text(repo.name),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.favorite,
+              color: _isFavorite(provider, repo)
+                  ? Colors.yellow
+                  : Color.fromARGB(255, 0, 100, 0)),
+          onPressed: () {
+            _onPressedFavorite(provider, repo);
+          },
+        ),
+      ],
     );
   }
 
